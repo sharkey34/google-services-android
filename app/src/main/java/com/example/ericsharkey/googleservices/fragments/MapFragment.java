@@ -3,17 +3,34 @@
 // MapFragment.java
 
 package com.example.ericsharkey.googleservices.fragments;
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import com.example.ericsharkey.googleservices.R;
+import com.example.ericsharkey.googleservices.constants.Const;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 
-public class MapFragment extends SupportMapFragment {
+public class MapFragment extends SupportMapFragment implements OnMapReadyCallback {
 
     private Boolean mRequestingLocation;
+    LocationManager mManager;
+    private GoogleMap mMap;
+    private double mLatitude;
+    private double mLongitude;
 
     public static MapFragment newInstance(){
 
@@ -24,6 +41,21 @@ public class MapFragment extends SupportMapFragment {
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setHasOptionsMenu(true);
+
+        getMapAsync(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if(requestCode == Const.REQUEST_LOCATION){
+            if(grantResults.length > 0){
+                if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission is granted.
+                }
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     // Inflating the menu
@@ -42,13 +74,59 @@ public class MapFragment extends SupportMapFragment {
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onMapReady(GoogleMap googleMap) {
+
+        if(getActivity() == null){
+            return;
+        }
+        mMap = googleMap;
+        mManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
 
 
+            Location lastKnown = mManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
+            // TODO: Zoom in the screen and drop a pin at the location.
+            if(lastKnown != null) {
+                mLatitude = lastKnown.getLatitude();
+                mLongitude = lastKnown.getLongitude();
 
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                zoomToUserLocation();
+//                addMarkers();
+            }
+        } else {
+            ActivityCompat.requestPermissions(getActivity(), new String[]
+                    {Manifest.permission.ACCESS_FINE_LOCATION}, Const.REQUEST_LOCATION);
+        }
     }
+
+    private void zoomToUserLocation(){
+        if(mMap != null) {
+
+            LatLng userLocation = new LatLng(mLatitude, mLongitude);
+            CameraUpdate update = CameraUpdateFactory.newLatLngZoom(userLocation, 100);
+            mMap.animateCamera(update);
+        }
+    }
+
+
+
+
+//    private void addMarkers(){
+//        if(mMap != null){
+//
+//            MarkerOptions options = new MarkerOptions();
+//            options.title("Full Sail University");
+//            options.snippet("Mobile Development Offices");
+//
+//            LatLng officeLocation = new LatLng(mOfficesLatitude, mOfficesLongitude);
+//            options.position(officeLocation);
+//
+//            map.addMarker(options);
+//        }
+//    }
+
 }

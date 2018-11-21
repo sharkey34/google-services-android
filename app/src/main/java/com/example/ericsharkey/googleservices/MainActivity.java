@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.example.ericsharkey.googleservices.fragments.MapFragment;
 import com.example.ericsharkey.googleservices.interfaces.MainInterface;
-
 public class MainActivity extends AppCompatActivity implements MainInterface {
 
     @Override
@@ -19,7 +18,6 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
                 .replace(R.id.frame, MapFragment.newInstance())
                 .commit();
     }
-
 
 
     @Override
