@@ -3,10 +3,13 @@
 // MainActivity.java
 
 package com.example.ericsharkey.googleservices;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import com.example.ericsharkey.googleservices.constants.Const;
 import com.example.ericsharkey.googleservices.fragments.MapFragment;
 import com.example.ericsharkey.googleservices.interfaces.MainInterface;
+
 public class MainActivity extends AppCompatActivity implements MainInterface {
 
     @Override
@@ -15,13 +18,19 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
         setContentView(R.layout.activity_main);
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frame, MapFragment.newInstance())
+                .replace(R.id.map_frame, MapFragment.newInstance())
                 .commit();
     }
 
 
     @Override
-    public void addClicked() {
+    public void displayForm(double lat, double lon) {
 
+        Intent intent = new Intent(this, FormActivity.class);
+        intent.setAction(Const.FORM_ACTION);
+        intent.putExtra(Const.EXTRA_LAT, lat);
+        intent.putExtra(Const.EXTRA_LON, lon);
+
+        startActivityForResult(intent, Const.REQUEST_FORM);
     }
 }

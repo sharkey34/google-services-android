@@ -6,5 +6,6 @@ package com.example.ericsharkey.googleservices.interfaces;
 
 public interface MainInterface {
 
-    void addClicked();
+    void displayForm(double lat, double lon);
+
 }

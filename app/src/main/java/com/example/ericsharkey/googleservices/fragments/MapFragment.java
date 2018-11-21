@@ -12,11 +12,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import com.example.ericsharkey.googleservices.R;
 import com.example.ericsharkey.googleservices.constants.Const;
+import com.example.ericsharkey.googleservices.interfaces.MainInterface;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,17 +26,26 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
-public class MapFragment extends SupportMapFragment implements OnMapReadyCallback {
+public class MapFragment extends SupportMapFragment implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
     private Boolean mRequestingLocation;
     LocationManager mManager;
     private GoogleMap mMap;
     private double mLatitude;
     private double mLongitude;
+    private MainInterface mListener;
 
     public static MapFragment newInstance(){
 
         return new MapFragment();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        if(context instanceof MainInterface) {
+            mListener = (MainInterface)context;
+        }
+        super.onAttach(context);
     }
 
     @Override
@@ -50,7 +61,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         if(requestCode == Const.REQUEST_LOCATION){
             if(grantResults.length > 0){
-                if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     // Permission is granted.
                 }
             }
@@ -69,8 +80,13 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     public boolean onOptionsItemSelected(MenuItem item) {
 
         // TODO: Open the form screen.
+        int itemID = item.getItemId();
 
-
+        if(itemID == R.id.add_btn){
+            if(mListener != null) {
+                mListener.displayForm(mLatitude, mLongitude);
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -81,6 +97,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
             return;
         }
         mMap = googleMap;
+        mMap.setOnMapLongClickListener(this);
         mManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
         if (ContextCompat.checkSelfPermission(getActivity(),
@@ -112,7 +129,13 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         }
     }
 
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+        Log.i("TAG", "onMapLongClick: ");
 
+
+        //TODO: Open the form with the lat and long selected.
+    }
 
 
 //    private void addMarkers(){
