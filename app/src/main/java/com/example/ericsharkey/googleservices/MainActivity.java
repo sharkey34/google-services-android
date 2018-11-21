@@ -6,8 +6,9 @@ package com.example.ericsharkey.googleservices;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.example.ericsharkey.googleservices.fragments.MapFragment;
+import com.example.ericsharkey.googleservices.interfaces.MainInterface;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainInterface {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,5 +18,12 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frame, MapFragment.newInstance())
                 .commit();
+    }
+
+
+
+    @Override
+    public void addClicked() {
+
     }
 }

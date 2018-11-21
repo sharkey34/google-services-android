@@ -4,6 +4,7 @@
 
 package com.example.ericsharkey.googleservices.fragments;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -39,5 +40,15 @@ public class MapFragment extends SupportMapFragment {
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+
+
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
