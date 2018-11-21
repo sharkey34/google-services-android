@@ -84,7 +84,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         if(itemID == R.id.add_btn){
             if(mListener != null) {
-                mListener.displayForm(mLatitude, mLongitude);
+                mListener.displayForm(mLatitude, mLongitude, false);
             }
         }
         return super.onOptionsItemSelected(item);
@@ -131,10 +131,12 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
     @Override
     public void onMapLongClick(LatLng latLng) {
-        Log.i("TAG", "onMapLongClick: ");
-
 
         //TODO: Open the form with the lat and long selected.
+
+        if (mListener != null){
+            mListener.displayForm(latLng.latitude, latLng.longitude, true);
+        }
     }
 
 
