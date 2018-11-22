@@ -20,6 +20,7 @@ import android.widget.Button;
 
 import com.example.ericsharkey.googleservices.R;
 import com.example.ericsharkey.googleservices.constants.Const;
+import com.example.ericsharkey.googleservices.data.MapItem;
 import com.example.ericsharkey.googleservices.interfaces.MainInterface;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,6 +28,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
 
 public class MapFragment extends SupportMapFragment implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
@@ -37,6 +40,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     private double mLatitude;
     private double mLongitude;
     private MainInterface mListener;
+    private ArrayList<MapItem> mList = new ArrayList<>();
 
 
     public static MapFragment newInstance(){
@@ -120,7 +124,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         if(itemID == R.id.add_btn){
             if(mListener != null) {
-                mListener.displayForm(mLatitude, mLongitude);
+                mListener.displayForm(mLatitude, mLongitude, mList);
             }
         }
         return super.onOptionsItemSelected(item);
@@ -175,7 +179,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         //TODO: Open the form with the lat and long selected.
 
         if (mListener != null){
-            mListener.displayForm(latLng.latitude, latLng.longitude);
+            mListener.displayForm(latLng.latitude, latLng.longitude, mList);
         }
     }
 

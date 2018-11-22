@@ -4,8 +4,12 @@
 
 package com.example.ericsharkey.googleservices.interfaces;
 
+import com.example.ericsharkey.googleservices.data.MapItem;
+
+import java.util.ArrayList;
+
 public interface MainInterface {
 
-    void displayForm(double lat, double lon);
+    void displayForm(double lat, double lon, ArrayList<MapItem> list);
 
 }

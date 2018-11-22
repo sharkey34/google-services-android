@@ -6,4 +6,7 @@
     <string name="delete_btn">Delete</string>
     <string name="network_unavailable">Network is unavailable</string>
     <string name="image_desc">Captured Image</string>
+    <string name="title_hint">Title</string>
+    <string name="desc_hint">Description</string>
+    <string name="form_contentDesc">Captured Image</string>
 </resources>

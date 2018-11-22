@@ -7,8 +7,11 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.example.ericsharkey.googleservices.constants.Const;
+import com.example.ericsharkey.googleservices.data.MapItem;
 import com.example.ericsharkey.googleservices.fragments.MapFragment;
 import com.example.ericsharkey.googleservices.interfaces.MainInterface;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements MainInterface {
 
@@ -24,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
 
 
     @Override
-    public void displayForm(double lat, double lon) {
+    public void displayForm(double lat, double lon, ArrayList<MapItem> list) {
 
         Intent intent = new Intent(this, FormActivity.class);
 
