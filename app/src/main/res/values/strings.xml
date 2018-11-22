@@ -3,5 +3,7 @@
     <string name="add_btn">Add</string>
     <string name="save_btn">Save</string>
     <string name="camera_btn">Camera</string>
+    <string name="delete_btn">Delete</string>
     <string name="network_unavailable">Network is unavailable</string>
+    <string name="image_desc">Captured Image</string>
 </resources>

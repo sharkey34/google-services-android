@@ -23,17 +23,13 @@ public class FormActivity extends AppCompatActivity {
 
             String action = intent.getAction();
 
-            if (action != null && action.equals(Const.FORM_ACTION_LATLONG)) {
-
                 double lat = intent.getDoubleExtra(Const.EXTRA_LAT, 0);
                 double lon = intent.getDoubleExtra(Const.EXTRA_LON, 0);
 
-                // TODO: Populate the fields with the values.
-            }
+                // TODO: Pass bundle with lat long to fragment
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.form_frame, FormFragment.newInstance())
+                    .commit();
         }
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.form_frame, FormFragment.newInstance())
-                .commit();
     }
 }

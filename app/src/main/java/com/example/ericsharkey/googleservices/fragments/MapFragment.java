@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Button;
+
 import com.example.ericsharkey.googleservices.R;
 import com.example.ericsharkey.googleservices.constants.Const;
 import com.example.ericsharkey.googleservices.interfaces.MainInterface;
@@ -28,15 +30,16 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class MapFragment extends SupportMapFragment implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
-    private Boolean mRequestingLocation;
+    private boolean mRequestingLocation;
+    private boolean mEnabled = false;
     LocationManager mManager;
     private GoogleMap mMap;
     private double mLatitude;
     private double mLongitude;
     private MainInterface mListener;
 
-    public static MapFragment newInstance(){
 
+    public static MapFragment newInstance(){
         return new MapFragment();
     }
 
@@ -57,16 +60,48 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     }
 
     @Override
+    public void onActivityCreated(Bundle bundle) {
+        super.onActivityCreated(bundle);
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         if(requestCode == Const.REQUEST_LOCATION){
             if(grantResults.length > 0){
-                if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     // Permission is granted.
+                if(getActivity() != null){
+                    if (ContextCompat.checkSelfPermission(getActivity(),
+                            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+
+                        mManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+                        if (mManager != null){
+
+                            Location lastKnown = mManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                            // TODO: Zoom in the screen and drop a pin at the location.
+                            if(lastKnown != null) {
+                                mLatitude = lastKnown.getLatitude();
+                                mLongitude = lastKnown.getLongitude();
+
+                                mEnabled = true;
+                                getActivity().invalidateOptionsMenu();
+
+                                zoomToUserLocation();
+                                //                addMarkers();
+                            }
+                        }
+                    }
                 }
             }
         }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.add_btn);
+        item.setEnabled(mEnabled);
     }
 
     // Inflating the menu
@@ -74,6 +109,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.map_menu, menu);
     }
+
 
     // Displaying the Form screen when the add button is selected.
     @Override
@@ -84,11 +120,12 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         if(itemID == R.id.add_btn){
             if(mListener != null) {
-                mListener.displayForm(mLatitude, mLongitude, false);
+                mListener.displayForm(mLatitude, mLongitude);
             }
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -98,31 +135,34 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         }
         mMap = googleMap;
         mMap.setOnMapLongClickListener(this);
-        mManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
         if (ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
 
+            mManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            if (mManager != null){
+                Location lastKnown = mManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-            Location lastKnown = mManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                // TODO: Zoom in the screen and drop a pin at the location.
+                if(lastKnown != null) {
+                    mLatitude = lastKnown.getLatitude();
+                    mLongitude = lastKnown.getLongitude();
 
-            // TODO: Zoom in the screen and drop a pin at the location.
-            if(lastKnown != null) {
-                mLatitude = lastKnown.getLatitude();
-                mLongitude = lastKnown.getLongitude();
+                    mEnabled = true;
+                    getActivity().invalidateOptionsMenu();
 
-                zoomToUserLocation();
+                    zoomToUserLocation();
 //                addMarkers();
+                }
             }
         } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]
+            requestPermissions(new String[]
                     {Manifest.permission.ACCESS_FINE_LOCATION}, Const.REQUEST_LOCATION);
         }
     }
 
     private void zoomToUserLocation(){
         if(mMap != null) {
-
             LatLng userLocation = new LatLng(mLatitude, mLongitude);
             CameraUpdate update = CameraUpdateFactory.newLatLngZoom(userLocation, 100);
             mMap.animateCamera(update);
@@ -135,7 +175,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         //TODO: Open the form with the lat and long selected.
 
         if (mListener != null){
-            mListener.displayForm(latLng.latitude, latLng.longitude, true);
+            mListener.displayForm(latLng.latitude, latLng.longitude);
         }
     }
 

@@ -31,6 +31,8 @@ public class Utils {
     }
 
 
+
+
 //    // Function to write the ArrayList to the file.
 //    public static void write(ArrayList<Person> list, Context context){
 //

@@ -24,17 +24,14 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
 
 
     @Override
-    public void displayForm(double lat, double lon, boolean passInfo) {
+    public void displayForm(double lat, double lon) {
 
         Intent intent = new Intent(this, FormActivity.class);
 
-        if(passInfo){
             intent.putExtra(Const.EXTRA_LAT, lat);
             intent.putExtra(Const.EXTRA_LON, lon);
-            intent.setAction(Const.FORM_ACTION_LATLONG);
-        } else {
             intent.setAction(Const.FORM_ACTION);
-        }
+
         startActivityForResult(intent, Const.REQUEST_FORM);
     }
 }
