@@ -16,22 +16,26 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.ericsharkey.googleservices.R;
 import com.example.ericsharkey.googleservices.constants.Const;
 import com.example.ericsharkey.googleservices.data.MapItem;
 import com.example.ericsharkey.googleservices.interfaces.MainInterface;
+import com.example.ericsharkey.googleservices.utilities.Utils;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
 import java.util.ArrayList;
 
-public class MapFragment extends SupportMapFragment implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
+public class MapFragment extends SupportMapFragment implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener {
 
     private boolean mRequestingLocation;
     private boolean mEnabled = false;
@@ -61,6 +65,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         setHasOptionsMenu(true);
 
         getMapAsync(this);
+        mList = Utils.read(getContext());
     }
 
     @Override
@@ -139,6 +144,8 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         }
         mMap = googleMap;
         mMap.setOnMapLongClickListener(this);
+        mMap.setInfoWindowAdapter(this);
+        mMap.setOnInfoWindowClickListener(this);
 
         if (ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
@@ -146,17 +153,19 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
             mManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
             if (mManager != null){
                 Location lastKnown = mManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
+                mEnabled = true;
                 // TODO: Zoom in the screen and drop a pin at the location.
                 if(lastKnown != null) {
                     mLatitude = lastKnown.getLatitude();
                     mLongitude = lastKnown.getLongitude();
 
-                    mEnabled = true;
+//                    mEnabled = true;
                     getActivity().invalidateOptionsMenu();
 
                     zoomToUserLocation();
 //                addMarkers();
+                } else {
+                    Toast.makeText(getActivity(), R.string.no_location, Toast.LENGTH_SHORT).show();
                 }
             }
         } else {
@@ -181,6 +190,21 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         if (mListener != null){
             mListener.displayForm(latLng.latitude, latLng.longitude, mList);
         }
+    }
+
+    @Override
+    public View getInfoWindow(Marker marker) {
+        return null;
+    }
+
+    @Override
+    public View getInfoContents(Marker marker) {
+        return null;
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+
     }
 
 

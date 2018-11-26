@@ -3,6 +3,8 @@
 // MapItem.java
 
 package com.example.ericsharkey.googleservices.data;
+import android.net.Uri;
+
 import java.io.Serializable;
 
 public class MapItem implements Serializable {

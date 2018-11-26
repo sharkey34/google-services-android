@@ -9,4 +9,7 @@
     <string name="title_hint">Title</string>
     <string name="desc_hint">Description</string>
     <string name="form_contentDesc">Captured Image</string>
+    <string name="no_location">No location could be found.</string>
+    <string name="empty_input">Input can not be empty.</string>
+    <string name="save_successful">Save Successful</string>
 </resources>

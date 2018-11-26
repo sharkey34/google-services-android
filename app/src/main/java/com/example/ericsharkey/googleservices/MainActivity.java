@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
 
             intent.putExtra(Const.EXTRA_LAT, lat);
             intent.putExtra(Const.EXTRA_LON, lon);
+            intent.putExtra(Const.EXTRA_LIST, list);
             intent.setAction(Const.FORM_ACTION);
 
         startActivityForResult(intent, Const.REQUEST_FORM);

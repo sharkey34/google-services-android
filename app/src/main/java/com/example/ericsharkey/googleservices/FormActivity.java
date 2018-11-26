@@ -9,7 +9,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import com.example.ericsharkey.googleservices.constants.Const;
+import com.example.ericsharkey.googleservices.data.MapItem;
 import com.example.ericsharkey.googleservices.fragments.FormFragment;
+
+import java.util.ArrayList;
+
 public class FormActivity extends AppCompatActivity {
 
 
@@ -28,10 +32,12 @@ public class FormActivity extends AppCompatActivity {
 
                 double lat = intent.getDoubleExtra(Const.EXTRA_LAT, 0);
                 double lon = intent.getDoubleExtra(Const.EXTRA_LON, 0);
+                ArrayList<MapItem> list = (ArrayList<MapItem>) intent.getSerializableExtra(Const.EXTRA_LIST);
 
                 Bundle bundle = new Bundle();
                 bundle.putDouble(Const.EXTRA_LAT, lat);
                 bundle.putDouble(Const.EXTRA_LON, lon);
+                bundle.putSerializable(Const.EXTRA_LIST, list);
 
                 Fragment fragment = FormFragment.newInstance();
                 fragment.setArguments(bundle);
