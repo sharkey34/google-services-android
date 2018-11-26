@@ -66,11 +66,12 @@ public class FormFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         Bundle bundle = getArguments();
-
+         // TODO: Bundle is null.
         if(bundle != null){
             mLat = bundle.getDouble(Const.EXTRA_LAT);
             mLon = bundle.getDouble(Const.EXTRA_LON);
             mList = (ArrayList<MapItem>)bundle.getSerializable(Const.EXTRA_LIST);
+            Log.i("TAG", "onCreate: " + mList.size());
         }
         setHasOptionsMenu(true);
     }

@@ -43,7 +43,7 @@ public class FormActivity extends AppCompatActivity {
                 fragment.setArguments(bundle);
 
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.form_frame, FormFragment.newInstance())
+                        .replace(R.id.form_frame, fragment)
                         .commit();
             }
         }

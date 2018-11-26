@@ -13,11 +13,13 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ericsharkey.googleservices.R;
@@ -32,6 +34,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
@@ -66,6 +69,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         getMapAsync(this);
         mList = Utils.read(getContext());
+        Log.i("TAG", "onCreate: " + mList.size());
     }
 
     @Override
@@ -86,6 +90,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                         mManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
                         if (mManager != null){
+                            addMarkers();
 
                             Location lastKnown = mManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
@@ -98,7 +103,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                                 getActivity().invalidateOptionsMenu();
 
                                 zoomToUserLocation();
-                                //                addMarkers();
                             }
                         }
                     }
@@ -153,17 +157,17 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
             mManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
             if (mManager != null){
                 Location lastKnown = mManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                mEnabled = true;
+
+                addMarkers();
                 // TODO: Zoom in the screen and drop a pin at the location.
                 if(lastKnown != null) {
                     mLatitude = lastKnown.getLatitude();
                     mLongitude = lastKnown.getLongitude();
 
-//                    mEnabled = true;
+                    mEnabled = true;
                     getActivity().invalidateOptionsMenu();
 
-                    zoomToUserLocation();
-//                addMarkers();
+//                    zoomToUserLocation();
                 } else {
                     Toast.makeText(getActivity(), R.string.no_location, Toast.LENGTH_SHORT).show();
                 }
@@ -199,27 +203,41 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
     @Override
     public View getInfoContents(Marker marker) {
-        return null;
+
+        View contents = LayoutInflater.from(getActivity()).inflate(R.layout.info_window, null);
+
+
+        ((TextView)contents.findViewById(R.id.info_title)).setText(marker.getTitle());
+        ((TextView)contents.findViewById(R.id.info_desc)).setText(marker.getSnippet());
+
+        return contents;
     }
 
     @Override
     public void onInfoWindowClick(Marker marker) {
 
+        Log.i("TAG", "onInfoWindowClick: " + marker.getId());
+        //TODO: Open the details window.
+        if(mListener != null){
+        }
     }
 
 
-//    private void addMarkers(){
-//        if(mMap != null){
-//
-//            MarkerOptions options = new MarkerOptions();
-//            options.title("Full Sail University");
-//            options.snippet("Mobile Development Offices");
-//
-//            LatLng officeLocation = new LatLng(mOfficesLatitude, mOfficesLongitude);
-//            options.position(officeLocation);
-//
-//            map.addMarker(options);
-//        }
-//    }
+    private void addMarkers(){
+        if(mMap != null){
 
+            for (int i = 0; i < mList.size(); i++) {
+                Log.i("TAG", "addMarkers: " + i);
+
+
+                MarkerOptions options = new MarkerOptions();
+                options.title(mList.get(i).getmTitle());
+                options.snippet(mList.get(i).getmDesc());
+                LatLng officeLocation = new LatLng(mList.get(i).getmLat(), mList.get(i).getmLon());
+                options.position(officeLocation);
+
+                mMap.addMarker(options);
+            }
+        }
+    }
 }

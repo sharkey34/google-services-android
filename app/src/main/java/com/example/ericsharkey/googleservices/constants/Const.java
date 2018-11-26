@@ -13,6 +13,12 @@ public class Const {
     public static final int REQUEST_TAKE_PICTURE = 0x101;
     public static final int REQUEST_FORM = 0x1010;
     public static final int REQUEST_EXTERNAL = 0x01;
+    public static final int REQUEST_DETEAILS = 0x010;
+
+    // Main to Details
+    public static final String DETAILS_ACTION = "com.example.ericsharkey.googleservices.DETAILS";
+    public static final String MAP_ITEM = "com.example.ericsharkey.googleservices.MAPITEM";
+    public static final String INDEX = "com.example.ericsharkey.googleservices.INDEX";
 
     // Main to Form
     public static final String FORM_ACTION = "com.example.ericsharkey.googleservices.FORM";

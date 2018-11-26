@@ -38,4 +38,9 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
 
         startActivityForResult(intent, Const.REQUEST_FORM);
     }
+
+    @Override
+    public void displayDetails(MapItem mapItem, int index) {
+
+    }
 }
