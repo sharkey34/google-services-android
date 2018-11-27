@@ -22,6 +22,7 @@ public class FormActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
 
+        // Getting the intent information adding to bundle and sending to Form Fragment
         Intent intent = getIntent();
 
         if(intent != null ) {

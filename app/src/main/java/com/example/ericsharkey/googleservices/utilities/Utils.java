@@ -4,10 +4,7 @@
 
 package com.example.ericsharkey.googleservices.utilities;
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.widget.Toast;
-import com.example.ericsharkey.googleservices.R;
+
 import com.example.ericsharkey.googleservices.constants.Const;
 import com.example.ericsharkey.googleservices.data.MapItem;
 
@@ -18,31 +15,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+
 public class Utils {
 
 
-    public static boolean connected(Context context){
-        boolean status = false;
-
-        ConnectivityManager manager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        if(manager != null){
-            NetworkInfo info = manager.getActiveNetworkInfo();
-
-            if(info != null) {
-                status = true;
-            }
-        }  else {
-            Toast toast = Toast.makeText(context, R.string.network_unavailable, Toast.LENGTH_LONG);
-            toast.show();
-        }
-        return status;
-    }
-
-
-
-
-//    // Function to write the ArrayList to the file.
+ // Function to write the ArrayList to the file.
     public static void write(ArrayList<MapItem> list, Context context){
         try {
             FileOutputStream fos = context.openFileOutput(Const.FILE_NAME, Context.MODE_PRIVATE);
@@ -56,7 +33,7 @@ public class Utils {
     }
 
 
-//    // Function to read the object from the file.
+// Function to read the object from the file.
     public static ArrayList<MapItem> read(Context context){
         ArrayList<MapItem> list = new ArrayList<>();
 

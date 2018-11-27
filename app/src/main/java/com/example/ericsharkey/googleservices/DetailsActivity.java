@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import com.example.ericsharkey.googleservices.constants.Const;
 import com.example.ericsharkey.googleservices.data.MapItem;
 import com.example.ericsharkey.googleservices.fragments.DetailsFragment;
-import com.example.ericsharkey.googleservices.fragments.FormFragment;
 import com.example.ericsharkey.googleservices.interfaces.DetailsInterface;
 
 import java.util.ArrayList;
@@ -24,6 +23,8 @@ public class DetailsActivity extends AppCompatActivity implements DetailsInterfa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
+
+        // Getting the intent information adding to bundle and sending to Details Fragment
         Intent intent = getIntent();
 
         if(intent != null ) {

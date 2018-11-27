@@ -5,24 +5,17 @@
 package com.example.ericsharkey.googleservices.fragments;
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.net.Uri;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,10 +35,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
 
 public class FormFragment extends Fragment {
 
+    // Member Variables.
     private double mLat;
     private double mLon;
     private Bitmap mImage;
@@ -61,6 +54,7 @@ public class FormFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_form, container, false);
     }
 
+    // Getting the bundle arguments passed from the activity.
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,16 +65,18 @@ public class FormFragment extends Fragment {
             mLat = bundle.getDouble(Const.EXTRA_LAT);
             mLon = bundle.getDouble(Const.EXTRA_LON);
             mList = (ArrayList<MapItem>)bundle.getSerializable(Const.EXTRA_LIST);
-            Log.i("TAG", "onCreate: " + mList.size());
         }
         setHasOptionsMenu(true);
     }
 
+    // Inflating the menu
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.form_menu, menu);
     }
 
+    // Saving the updated list and the image.
+    // Opening the camera if camera button selected.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -131,6 +127,7 @@ public class FormFragment extends Fragment {
     }
 
 
+    // Getting the file Uri and passing to the saveImage Function.
     private Uri getUri(){
 
         File publicStorage = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
@@ -150,6 +147,7 @@ public class FormFragment extends Fragment {
         return imageUri;
     }
 
+    // Checking Permissions.
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
@@ -167,6 +165,7 @@ public class FormFragment extends Fragment {
         }
     }
 
+    // Saving list to the file system.
     private void saveFile(String t, String d){
         Uri imageUri = getUri();
 
@@ -180,6 +179,7 @@ public class FormFragment extends Fragment {
         }
     }
 
+    // Saving hte image to hte public directory.
     private void saveImage(File imageFile){
         if(getContext() != null){
             try{
@@ -193,6 +193,7 @@ public class FormFragment extends Fragment {
         }
     }
 
+    // Getting teh image taken from the camera.
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 

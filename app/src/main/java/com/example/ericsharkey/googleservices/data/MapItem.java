@@ -3,19 +3,18 @@
 // MapItem.java
 
 package com.example.ericsharkey.googleservices.data;
-import android.net.Uri;
-
 import java.io.Serializable;
 
 public class MapItem implements Serializable {
 
-    private String mTitle;
-    private String mDesc;
-    private double mLat;
-    private double mLon;
-    private String mImageURI;
+    // Properties
+    private final String mTitle;
+    private final String mDesc;
+    private final double mLat;
+    private final double mLon;
+    private final String mImageURI;
 
-
+    // Constructor
     public MapItem(String _title, String _desc, String _imageURI, double _lat, double _lon){
         mTitle = _title;
         mDesc = _desc;
@@ -24,7 +23,7 @@ public class MapItem implements Serializable {
         mImageURI = _imageURI;
     }
 
-
+    // Getters
     public String getmTitle() {
         return mTitle;
     }

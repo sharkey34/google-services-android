@@ -24,21 +24,23 @@ import com.example.ericsharkey.googleservices.constants.Const;
 import com.example.ericsharkey.googleservices.data.MapItem;
 import com.example.ericsharkey.googleservices.interfaces.DetailsInterface;
 import com.example.ericsharkey.googleservices.utilities.Utils;
-
 import java.io.File;
 import java.util.ArrayList;
 
 public class DetailsFragment extends Fragment {
 
+    // Member Variables
     private ArrayList<MapItem> mList = new ArrayList<>();
     private int mIndex;
     private DetailsInterface mListener;
 
+    // Returning a new Instance of the DetailsFragment.
     public static DetailsFragment newInstance(){
         return new DetailsFragment();
     }
 
 
+    // Setting up the listener
     @Override
     public void onAttach(Context context) {
         if(context instanceof DetailsInterface) {
@@ -52,6 +54,7 @@ public class DetailsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Getting the index and list from the Bundle.
         Bundle bundle = getArguments();
 
         if(bundle != null){
@@ -59,7 +62,6 @@ public class DetailsFragment extends Fragment {
             mIndex = bundle.getInt(Const.INDEX);
             mList = (ArrayList<MapItem>) bundle.getSerializable(Const.EXTRA_LIST);
         }
-
         setHasOptionsMenu(true);
     }
 
@@ -70,6 +72,7 @@ public class DetailsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_details, container, false);
     }
 
+    // Setting up the UI Elements.
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -93,6 +96,7 @@ public class DetailsFragment extends Fragment {
     }
 
 
+    // Checking that the delete btn was selected and displaying the dialog.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -104,6 +108,7 @@ public class DetailsFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    // Setting up the dialog.
     private void displayDialog(){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
@@ -114,7 +119,8 @@ public class DetailsFragment extends Fragment {
         builder.show();
     }
 
-    private AlertDialog.OnClickListener deleteClicked = new DialogInterface.OnClickListener() {
+    // Fucntion to delete when the delete button is selected.
+    private final AlertDialog.OnClickListener deleteClicked = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
 

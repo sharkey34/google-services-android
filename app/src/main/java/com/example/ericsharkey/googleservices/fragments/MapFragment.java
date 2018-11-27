@@ -5,25 +5,20 @@
 package com.example.ericsharkey.googleservices.fragments;
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.ericsharkey.googleservices.R;
 import com.example.ericsharkey.googleservices.constants.Const;
 import com.example.ericsharkey.googleservices.data.MapItem;
@@ -37,7 +32,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -45,21 +39,22 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         GoogleMap.OnMapLongClickListener, GoogleMap.InfoWindowAdapter,
         GoogleMap.OnInfoWindowClickListener, LocationListener {
 
+    // Member Variables.
     private boolean mRequestingLocation;
     private boolean mEnabled = false;
-    LocationManager mManager;
+    private LocationManager mManager;
     private GoogleMap mMap;
     private double mLatitude;
     private double mLongitude;
     private MainInterface mListener;
     private ArrayList<MapItem> mList = new ArrayList<>();
-    private HashMap<String,Integer> mHashMap = new HashMap<>();
-
+    private final HashMap<String,Integer> mHashMap = new HashMap<>();
 
     public static MapFragment newInstance(){
         return new MapFragment();
     }
 
+    // Setting up the listener
     @Override
     public void onAttach(Context context) {
         if(context instanceof MainInterface) {
@@ -68,6 +63,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         super.onAttach(context);
     }
 
+    // Getting the list
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -90,11 +86,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         }
     }
 
-    @Override
-    public void onActivityCreated(Bundle bundle) {
-        super.onActivityCreated(bundle);
-    }
-
+    // Checking permissions and updating the location
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
@@ -134,6 +126,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         }
     }
 
+    // Setting menu btn enabled value.
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         MenuItem item = menu.findItem(R.id.add_btn);
@@ -162,6 +155,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     }
 
 
+    // Setting up the map
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
@@ -203,6 +197,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         }
     }
 
+    // Method to zoom in on the location.
     private void zoomToUserLocation(){
         if(mMap != null) {
             LatLng userLocation = new LatLng(mLatitude, mLongitude);
@@ -211,6 +206,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         }
     }
 
+    // Opening the form on long click
     @Override
     public void onMapLongClick(LatLng latLng) {
 
@@ -224,6 +220,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         return null;
     }
 
+    // Setting up the custom views values
     @Override
     public View getInfoContents(Marker marker) {
 
@@ -241,14 +238,19 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         String key = marker.getTitle() + marker.getSnippet();
 
-        Integer i = mHashMap.get(key);
-        int index = i;
 
-        if(mListener != null){
-            mListener.displayDetails(mList,index);
+        Integer i = mHashMap.get(key);
+
+        if(i != null){
+            int index = i;
+
+            if(mListener != null){
+                mListener.displayDetails(mList,index);
+            }
         }
     }
 
+    // Adding markers for each image saved.
     private void addMarkers(){
         if(mMap != null){
 
@@ -269,6 +271,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         }
     }
 
+    // Updating the location
     @Override
     public void onLocationChanged(Location location) {
 
