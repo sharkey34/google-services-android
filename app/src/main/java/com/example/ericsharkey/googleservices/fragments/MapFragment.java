@@ -5,8 +5,10 @@
 package com.example.ericsharkey.googleservices.fragments;
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -37,8 +39,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class MapFragment extends SupportMapFragment implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener {
+public class MapFragment extends SupportMapFragment implements OnMapReadyCallback,
+        GoogleMap.OnMapLongClickListener, GoogleMap.InfoWindowAdapter,
+        GoogleMap.OnInfoWindowClickListener, LocationListener {
 
     private boolean mRequestingLocation;
     private boolean mEnabled = false;
@@ -48,6 +53,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     private double mLongitude;
     private MainInterface mListener;
     private ArrayList<MapItem> mList = new ArrayList<>();
+    private HashMap<String,Integer> mHashMap = new HashMap<>();
 
 
     public static MapFragment newInstance(){
@@ -69,7 +75,19 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         getMapAsync(this);
         mList = Utils.read(getContext());
-        Log.i("TAG", "onCreate: " + mList.size());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Reloading the map.
+        if(mMap != null) {
+            mList = Utils.read(getContext());
+            mMap.clear();
+            addMarkers();
+            zoomToUserLocation();
+        }
     }
 
     @Override
@@ -82,6 +100,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         if(requestCode == Const.REQUEST_LOCATION){
             if(grantResults.length > 0){
+
                     // Permission is granted.
                 if(getActivity() != null){
                     if (ContextCompat.checkSelfPermission(getActivity(),
@@ -94,7 +113,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
                             Location lastKnown = mManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-                            // TODO: Zoom in the screen and drop a pin at the location.
                             if(lastKnown != null) {
                                 mLatitude = lastKnown.getLatitude();
                                 mLongitude = lastKnown.getLongitude();
@@ -103,6 +121,11 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                                 getActivity().invalidateOptionsMenu();
 
                                 zoomToUserLocation();
+                            } else {
+                                mManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10.0f, this);
+                                mRequestingLocation = true;
+
+                                Toast.makeText(getActivity(), R.string.no_location, Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -128,7 +151,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        // TODO: Open the form screen.
         int itemID = item.getItemId();
 
         if(itemID == R.id.add_btn){
@@ -159,7 +181,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                 Location lastKnown = mManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
                 addMarkers();
-                // TODO: Zoom in the screen and drop a pin at the location.
+
                 if(lastKnown != null) {
                     mLatitude = lastKnown.getLatitude();
                     mLongitude = lastKnown.getLongitude();
@@ -167,8 +189,11 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                     mEnabled = true;
                     getActivity().invalidateOptionsMenu();
 
-//                    zoomToUserLocation();
+                    zoomToUserLocation();
                 } else {
+                    mManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10.0f, this);
+                    mRequestingLocation = true;
+
                     Toast.makeText(getActivity(), R.string.no_location, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -181,15 +206,13 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     private void zoomToUserLocation(){
         if(mMap != null) {
             LatLng userLocation = new LatLng(mLatitude, mLongitude);
-            CameraUpdate update = CameraUpdateFactory.newLatLngZoom(userLocation, 100);
+            CameraUpdate update = CameraUpdateFactory.newLatLngZoom(userLocation, 16);
             mMap.animateCamera(update);
         }
     }
 
     @Override
     public void onMapLongClick(LatLng latLng) {
-
-        //TODO: Open the form with the lat and long selected.
 
         if (mListener != null){
             mListener.displayForm(latLng.latitude, latLng.longitude, mList);
@@ -206,29 +229,30 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         View contents = LayoutInflater.from(getActivity()).inflate(R.layout.info_window, null);
 
-
         ((TextView)contents.findViewById(R.id.info_title)).setText(marker.getTitle());
         ((TextView)contents.findViewById(R.id.info_desc)).setText(marker.getSnippet());
 
         return contents;
     }
 
+    // Getting index and opening Details
     @Override
     public void onInfoWindowClick(Marker marker) {
 
-        Log.i("TAG", "onInfoWindowClick: " + marker.getId());
-        //TODO: Open the details window.
+        String key = marker.getTitle() + marker.getSnippet();
+
+        Integer i = mHashMap.get(key);
+        int index = i;
+
         if(mListener != null){
+            mListener.displayDetails(mList,index);
         }
     }
-
 
     private void addMarkers(){
         if(mMap != null){
 
             for (int i = 0; i < mList.size(); i++) {
-                Log.i("TAG", "addMarkers: " + i);
-
 
                 MarkerOptions options = new MarkerOptions();
                 options.title(mList.get(i).getmTitle());
@@ -236,8 +260,41 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                 LatLng officeLocation = new LatLng(mList.get(i).getmLat(), mList.get(i).getmLon());
                 options.position(officeLocation);
 
+                // Setting the values for the hashMap to get the index later.
+                String key = options.getTitle() + options.getSnippet();
+                mHashMap.put(key, i);
+
                 mMap.addMarker(options);
             }
         }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+        mLatitude = location.getLatitude();
+        mLongitude = location.getLongitude();
+
+        zoomToUserLocation();
+
+        if(mRequestingLocation){
+            mRequestingLocation = false;
+            mManager.removeUpdates(this);
+        }
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 }

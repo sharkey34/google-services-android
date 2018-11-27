@@ -66,7 +66,7 @@ public class FormFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         Bundle bundle = getArguments();
-         // TODO: Bundle is null.
+
         if(bundle != null){
             mLat = bundle.getDouble(Const.EXTRA_LAT);
             mLon = bundle.getDouble(Const.EXTRA_LON);
@@ -89,12 +89,6 @@ public class FormFragment extends Fragment {
        switch (itemID){
 
            case R.id.save_btn:
-               // TODO: Validate input
-               // Save details and imageURI to File System
-               // Save Image to Public Storage.
-
-               //TODO: When save is selected get the returned image and uri and add to the list
-
 
                if(getView() != null){
                    EditText t = getView().findViewById(R.id.form_title);
@@ -104,14 +98,15 @@ public class FormFragment extends Fragment {
                    if (!t.getText().toString().isEmpty() && !d.getText().toString().isEmpty()
                            && imageView.getDrawable() != null && getContext() != null) {
 
-
                        int readResult = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
                        int writeResult = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
                        if (readResult == PackageManager.PERMISSION_GRANTED && writeResult == PackageManager.PERMISSION_GRANTED){
-                           Log.i("TAG", "saveFile: Permission granted");
 
                          saveFile(t.getText().toString(), d.getText().toString());
+
+                         t.setText(null);
+                         d.setText(null);
 
                        } else {
                            requestPermissions(new String[]
@@ -126,11 +121,8 @@ public class FormFragment extends Fragment {
 
                break;
            case R.id.camera_btn:
-               // TODO: Open the device camera and get the returned image.
 
-               // TODO: Get the proper URI from the provider.
                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//               intent.putExtra(MediaStore.EXTRA_OUTPUT, getUri());
                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                startActivityForResult(intent, Const.REQUEST_TAKE_PICTURE);
                break;
@@ -150,7 +142,6 @@ public class FormFragment extends Fragment {
                 if(imageFile.createNewFile()){
                     saveImage(imageFile);
                     imageUri = Uri.fromFile(imageFile);
-//                    imageUri = FileProvider.getUriForFile(getActivity(), Const.AUTHORITY, imageFile);
                 }
             } catch (Exception e){
                 e.printStackTrace();
@@ -177,8 +168,6 @@ public class FormFragment extends Fragment {
     }
 
     private void saveFile(String t, String d){
-        // ADD item to the list.
-        // ADD item to the list.
         Uri imageUri = getUri();
 
         if(getContext() != null && imageUri != null){
@@ -187,7 +176,6 @@ public class FormFragment extends Fragment {
             mList.add(mapItem);
 
             Utils.write(mList, getContext());
-
             Toast.makeText(getContext(), R.string.save_successful, Toast.LENGTH_SHORT).show();
         }
     }

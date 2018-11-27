@@ -6,6 +6,8 @@ package com.example.ericsharkey.googleservices;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+
 import com.example.ericsharkey.googleservices.constants.Const;
 import com.example.ericsharkey.googleservices.data.MapItem;
 import com.example.ericsharkey.googleservices.fragments.MapFragment;
@@ -19,6 +21,8 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Log.i("TAG", "onCreate: Main");
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.map_frame, MapFragment.newInstance())
@@ -36,11 +40,18 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
             intent.putExtra(Const.EXTRA_LIST, list);
             intent.setAction(Const.FORM_ACTION);
 
-        startActivityForResult(intent, Const.REQUEST_FORM);
+            startActivity(intent);
     }
 
     @Override
-    public void displayDetails(MapItem mapItem, int index) {
+    public void displayDetails(ArrayList<MapItem> list, int index) {
 
+        Intent intent = new Intent(this, DetailsActivity.class);
+
+        intent.putExtra(Const.EXTRA_LIST, list);
+        intent.putExtra(Const.INDEX, index);
+        intent.setAction(Const.DETAILS_ACTION);
+
+        startActivity(intent);
     }
 }

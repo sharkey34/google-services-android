@@ -14,4 +14,8 @@
     <string name="save_successful">Save Successful</string>
     <string name="info_contentDesc">Launcher Icon</string>
     <string name="details_contentDesc">Details Image</string>
+    <string name="dialog_title">Are you sure you want to delete image?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel_btn">Cancel</string>
+
 </resources>

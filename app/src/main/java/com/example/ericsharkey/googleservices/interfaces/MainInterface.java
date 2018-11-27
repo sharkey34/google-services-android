@@ -11,6 +11,6 @@ import java.util.ArrayList;
 public interface MainInterface {
 
     void displayForm(double lat, double lon, ArrayList<MapItem> list);
-    void displayDetails(MapItem mapItem, int index);
+    void displayDetails(ArrayList<MapItem> list, int index);
 
 }
